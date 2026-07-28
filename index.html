@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una carta para ti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #4a148c;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Tulipanes decorativos en las esquinas */
+    .tulip-decor {
+      position: fixed;
+      width: 140px;
+      height: auto;
+      z-index: 1;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .tulip-left-top {
+      top: -10px;
+      left: -10px;
+      transform: rotate(15deg);
+    }
+
+    .tulip-right-bottom {
+      bottom: -10px;
+      right: -10px;
+      transform: rotate(-165deg);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(106, 27, 154, 0.15);
+      max-width: 580px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      border: 1px solid rgba(225, 190, 231, 0.5);
+      transition: all 0.4s ease;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      color: #6a1b9a;
+      font-size: 38px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* PANTALLA DE CONTRASEÑA */
+    .login-container {
+      text-align: center;
+    }
+
+    .login-container p {
+      font-size: 15px;
+      margin-bottom: 20px;
+      color: #6a1b9a;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e1bee7;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      text-align: center;
+      background-color: #faf5fc;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #8e24aa;
+      box-shadow: 0 0 8px rgba(142, 36, 170, 0.2);
+      background-color: #ffffff;
+    }
+
+    .letter-content {
+      line-height: 1.8;
+      font-size: 15px;
+      color: #4a148c;
+      margin-bottom: 25px;
+      white-space: pre-line;
+      background: #fdf7ff;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid #ab47bc;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e1bee7, transparent);
+      margin: 25px 0;
+    }
+
+    label, h3 {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #6a1b9a;
+      font-size: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 14px;
+      border: 2px solid #e1bee7;
+      border-radius: 12px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      background-color: #faf5fc;
+      color: #333;
+    }
+
+    textarea:focus {
+      border-color: #8e24aa;
+      box-shadow: 0 0 8px rgba(142, 36, 170, 0.2);
+      background-color: #ffffff;
+    }
+
+    button.btn-principal {
+      width: 100%;
+      background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button.btn-principal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(106, 27, 154, 0.4);
+    }
+
+    /* Muro de respuestas */
+    .respuestas-muro {
+      margin-bottom: 25px;
+    }
+
+    .respuesta-item {
+      background-color: #f3e5f5;
+      border-left: 4px solid #8e24aa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 12px;
+      position: relative;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .respuesta-texto {
+      font-style: italic;
+      color: #4a148c;
+      white-space: pre-line;
+      line-height: 1.6;
+      padding-right: 70px;
+    }
+
+    .btn-borrar-local {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #e57373;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .btn-borrar-local:hover {
+      background: #ef5350;
+    }
+
+    .estado {
+      font-size: 13px;
+      color: #7b1fa2;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .error-msg {
+      color: #d32f2f;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .tulip-decor {
+        width: 90px;
+      }
+      .card {
+        padding: 25px 20px;
+      }
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUDIO OCULTO DE FONDO -->
+  <audio id="musicaFondo" loop preload="auto">
+    <source src="cancion.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ILUSTRACIONES DE TULIPANES (SVG) -->
+  <svg class="tulip-decor tulip-left-top" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 110 C 40 80, 50 50, 45 20" stroke="#66bb6a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M40 80 C 20 70, 10 50, 15 35 C 25 55, 35 70, 40 80" fill="#81c784"/>
+    <path d="M42 70 C 60 60, 70 40, 65 25 C 55 45, 45 60, 42 70" fill="#66bb6a"/>
+    <path d="M25 40 C 20 15, 35 5, 45 20 C 40 30, 30 35, 25 40 Z" fill="#ab47bc"/>
+    <path d="M65 40 C 70 15, 55 5, 45 20 C 50 30, 60 35, 65 40 Z" fill="#8e24aa"/>
+    <path d="M30 45 C 30 15, 60 15, 60 45 C 50 55, 40 55, 30 45 Z" fill="#ba68c8"/>
+  </svg>
+
+  <svg class="tulip-decor tulip-right-bottom" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 110 C 40 80, 50 50, 45 20" stroke="#66bb6a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M40 80 C 20 70, 10 50, 15 35 C 25 55, 35 70, 40 80" fill="#81c784"/>
+    <path d="M42 70 C 60 60, 70 40, 65 25 C 55 45, 45 60, 42 70" fill="#66bb6a"/>
+    <path d="M25 40 C 20 15, 35 5, 45 20 C 40 30, 30 35, 25 40 Z" fill="#ab47bc"/>
+    <path d="M65 40 C 70 15, 55 5, 45 20 C 50 30, 60 35, 65 40 Z" fill="#8e24aa"/>
+    <path d="M30 45 C 30 15, 60 15, 60 45 C 50 55, 40 55, 30 45 Z" fill="#ba68c8"/>
+  </svg>
+
+  <!-- TARJETA PRINCIPAL -->
+  <div class="card">
+    
+    <!-- 1. PANTALLA DE ACCESO CON CONTRASEÑA -->
+    <div id="pantallaLogin" class="login-container">
+      <h1>Hola 🌷</h1>
+      <p>Para leer esta carta, ingresa tu nombre y apellido completos:</p>
+      <input type="text" id="inputPass" placeholder="Tu nombre completo..." onkeypress="evaluarTecla(event)">
+      <button class="btn-principal" onclick="verificarContrasena()">Entrar 💜</button>
+      <p id="msgError" class="error-msg">Contraseña incorrecta. Intenta escribiendo tu nombre completo.</p>
+    </div>
+
+    <!-- 2. CONTENIDO DE LA CARTA -->
+    <div id="contenidoCarta" style="display: none;">
+      <h1>Para ti 🌷</h1>
+
+      <!-- CARTA ORIGINAL -->
+      <div class="letter-content">
+El motivo por el cual fume esa vez eres tu ya que andaba pensativo por que siento algo inefable tan increíble que no se puede expresar con palabras y quizás solo soy yo por que cuando estoy contigo me siento tan fuerte y a la vez tan débil la verdad no se que siento pero solo se que quiero estar contigo.
+
+Y tú, ¿qué sientes por mí?
+      </div>
+
+      <hr>
+
+      <!-- SECCIÓN DE RESPUESTAS PUBLICADAS -->
+      <div id="seccionRespuestas" class="respuestas-muro" style="display: none;">
+        <h3>Respuestas:</h3>
+        <div id="contenedorRespuestas"></div>
+      </div>
+
+      <!-- FORMULARIO PARA RESPONDER -->
+      <div id="seccionFormulario">
+        <label for="respuesta">Escribe tu respuesta:</label>
+        <textarea id="respuesta" placeholder="Escribe aquí tu respuesta..."></textarea>
+        <button id="btnEnviar" class="btn-principal" onclick="enviarRespuesta()">Publicar Respuesta 💜</button>
+        <p id="mensajeEstado" class="estado"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const NPOINT_URL = "https://api.npoint.io/84c88161bd7c079ca495";
+    const CLAVE_CORRECTA = "ronibelys sanchez";
+    let listaRespuestas = [];
+
+    function verificarContrasena() {
+      const input = document.getElementById('inputPass').value.toLowerCase().trim();
+      const msgError = document.getElementById('msgError');
+
+      if (input === CLAVE_CORRECTA) {
+        const audio = document.getElementById('musicaFondo');
+        audio.play().catch(e => console.log("El reproductor esperará la interacción:", e));
+
+        document.getElementById('pantallaLogin').style.display = 'none';
+        document.getElementById('contenidoCarta').style.display = 'block';
+        cargarRespuestas();
+      } else {
+        msgError.style.display = 'block';
+      }
+    }
+
+    function evaluarTecla(event) {
+      if (event.key === "Enter") {
+        verificarContrasena();
+      }
+    }
+
+    async function cargarRespuestas() {
+      try {
+        const res = await fetch(NPOINT_URL, { cache: 'no-store' });
+        const data = await res.json();
+
+        if (data && Array.isArray(data.respuestas)) {
+          listaRespuestas = data.respuestas;
+          renderizarRespuestas();
+        }
+      } catch (e) {
+        console.error("Error al cargar las respuestas:", e);
+      }
+    }
+
+    function renderizarRespuestas() {
+      const contenedor = document.getElementById('contenedorRespuestas');
+      const seccion = document.getElementById('seccionRespuestas');
+
+      if (listaRespuestas.length > 0) {
+        seccion.style.display = 'block';
+        contenedor.innerHTML = '';
+
+        listaRespuestas.forEach((texto, index) => {
+          const item = document.createElement('div');
+          item.className = 'respuesta-item';
+          item.id = `item-resp-${index}`;
+
+          item.innerHTML = `
+            <button class="btn-borrar-local" onclick="borrarEnPantalla('item-resp-${index}')">Borrar</button>
+            <div class="respuesta-texto">${escaparHTML(texto)}</div>
+          `;
+
+          contenedor.appendChild(item);
+        });
+      }
+    }
+
+    async function enviarRespuesta() {
+      const textarea = document.getElementById('respuesta');
+      const texto = textarea.value.trim();
+      const btn = document.getElementById('btnEnviar');
+      const estado = document.getElementById('mensajeEstado');
+
+      if (!texto) {
+        alert("Por favor escribe algo antes de publicar.");
+        return;
+      }
+
+      btn.disabled = true;
+      estado.innerText = "Guardando tu respuesta...";
+
+      listaRespuestas.push(texto);
+
+      try {
+        const res = await fetch(NPOINT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ respuestas: listaRespuestas })
+        });
+
+        if (res.ok) {
+          textarea.value = '';
+          renderizarRespuestas();
+          estado.innerText = "¡Respuesta publicada!";
+          setTimeout(() => { estado.innerText = ""; }, 3000);
+        } else {
+          alert("Hubo un problema al guardar en el servidor. Inténtalo de nuevo.");
+          listaRespuestas.pop();
+        }
+      } catch (e) {
+        console.error("Error al guardar:", e);
+        alert("Error de conexión al guardar la respuesta.");
+        listaRespuestas.pop();
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function borrarEnPantalla(elementId) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          el.remove();
+          const contenedor = document.getElementById('contenedorRespuestas');
+          if (contenedor.children.length === 0) {
+            document.getElementById('seccionRespuestas').style.display = 'none';
+          }
+        }, 300);
+      }
+    }
+
+    function escaparHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
+
+</body>
+</html>
